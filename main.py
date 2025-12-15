@@ -1,6 +1,32 @@
 import datetime
 import io
 import csv
+import sys
+import os
+
+picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
+libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+if os.path.exists(libdir):
+    sys.path.append(libdir)
+
+import logging
+from waveshare_epd import epd4in2_V2
+import time
+from datetime import date
+from PIL import Image,ImageDraw,ImageFont
+import traceback
+
+# logging.basicConfig(level=logging.DEBUG)
+
+epd = epd4in2_V2.EPD()
+epd.init()
+epd.Clear()
+
+font24 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 24)
+font18 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 18)
+font35 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 35)
+font50 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 50)
+font10 = ImageFont.truetype(os.path.join(picdir, 'Font.ttc'), 10)
 
 def get_message_for_day(day_data):
     """
@@ -421,3 +447,11 @@ for row in data_reader:
 
 if __name__ == "__main__":
     print(get_message_for_day(data_with_numbers))
+    while(True):
+        Himage = Image.new('1', (epd.width, epd.height), 255)  # 255: clear the frame
+        draw = ImageDraw.Draw(Himage)
+        draw.rectangle((140, 80, 240, 105), fill = 255)
+        draw.text((20, 10), time.strftime('%H:%M:%S'), font = font50, fill = 0)
+        draw.text((20,60), date.today().strftime("%A %d. %B %Y"), font = font18, fill = 0)
+        draw.text((1, 200), get_message_for_day(data_with_numbers), font = font18, fill = 0)
+        epd.display_Partial(epd.getbuffer(Himage))
