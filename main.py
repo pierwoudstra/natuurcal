@@ -52,7 +52,7 @@ def get_message_for_day(day_data):
 
 
         if row['Day'] == current_day and row['Month'] == current_month_num:
-            activity = row['Activity'].replace('\n ', ' ')
+            activity = row['Activity']
             
             return activity.strip()
             
@@ -453,5 +453,5 @@ if __name__ == "__main__":
         draw.rectangle((140, 80, 240, 105), fill = 255)
         draw.text((20, 10), time.strftime('%H:%M:%S'), font = font50, fill = 0)
         draw.text((20,60), date.today().strftime("%A %d. %B %Y"), font = font18, fill = 0)
-        draw.text((1, 100), get_message_for_day(data_with_numbers), font = font18, fill = 0)
+        draw.text((20, 100), get_message_for_day(data_with_numbers), font = font18, fill = 0)
         epd.display_Partial(epd.getbuffer(Himage))
